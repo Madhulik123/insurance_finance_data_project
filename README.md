@@ -1,6 +1,7 @@
 # Getsafe Analytics Engineer Case Study
 
-# Objective - The objective of this project is to design a simple and reliable analytics layer for finance reporting.
+# Objective :
+The objective of this project is to design a simple and reliable analytics layer for finance reporting.
 
 This project focuses on:
 1. Building a semantic layer for the finance team to report premium metrics consistently.
@@ -11,7 +12,11 @@ This project focuses on:
 # Lineage graph below:
 
 
-# Data Model
+# Data Model 
+Finance and Customer Pipeline.This project follows a **multi-layer dbt architecture** combining **Medallion Architecture** 
+and **Kimball Dimensional Modelling** principles.It specifically uses a star schema with two independant data models e.g finance and customer data models. 
+
+
 
 # How to run 
 1. Load accounting seed data to BigQuery
@@ -27,8 +32,8 @@ dbt test
 dbt build
 
 # Tools used 
-DBT
-Big Query
-Github
-Claude
+DBT,
+Big Query,
+Github,
+Claude,
 Word Doc
