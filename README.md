@@ -19,16 +19,16 @@ and **Kimball Dimensional Modelling** principles.It specifically uses a star sch
 
 
 # How to run 
-1. Load accounting seed data to BigQuery
+1. Load accounting seed data to BigQuery -
 dbt seed
 
-2. Run all models
+2. Run all models -
 dbt run
 
-3. Run tests
+3. Run tests -
 dbt test
 
-4. Run everything in one command
+4. Run everything in one command -
 dbt build
 
 # Tools used 
