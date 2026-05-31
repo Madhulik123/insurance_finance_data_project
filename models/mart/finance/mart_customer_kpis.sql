@@ -9,7 +9,7 @@
             "data_type": "date",
             "granularity": "day"
         },
-        cluster_by = ['product_group_key', 'product_group_key']
+        cluster_by = ['product_category', 'product_group_key']
     )
     }}
 
@@ -21,7 +21,7 @@ with fact as (
 dim_date as (
 
 Select 
-    calender_date,
+    calendar_date,
     year,
     quarter,
     month,
@@ -49,7 +49,7 @@ Select
     f.contract_start_date,
     f.contract_end_date,
     f.loaded_at,
-    dd.calender_date,
+    dd.calendar_date,
     dd.year,
     dd.quarter,
     dd.month,
@@ -69,7 +69,7 @@ Select
     f.daily_premium
 
     from fact as f
-    left join dim_date as dd on f.calendar_date = dd.calender_date
+    left join dim_date as dd on f.calendar_date = dd.calendar_date
     left join dim_product_group as dp on f.product_group_key = dp.product_group_key
 )
 

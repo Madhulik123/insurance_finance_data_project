@@ -9,7 +9,7 @@ select * from {{ source('raw', 'rawdata_getsafe') }}
 
 data as (
 Select 
-transaction_id as id,
+transaction_id ,
 created_at,
 lower(trim(charged_party)) as charged_party,
 cast(premium_amount as numeric) as premium_amount,

@@ -12,7 +12,7 @@ select * from {{ ref('int_finance_data') }}
 dim_date as (
     select
         date_key,
-        calender_date
+        calendar_date
     from {{ ref('dim_date') }}
 ),
 
@@ -28,7 +28,7 @@ dim_party as (
 final as (
 
 select 
-    t.id as transaction_id,
+    t.transaction_id,
     d.date_key,
     p.party_id,
     t.status as status_key,
@@ -39,7 +39,7 @@ select
     t.net_premium_amount,
     t.loaded_at
 from transactions as t
-left join dim_date as d on t.transaction_date  = d.calender_date
+left join dim_date as d on t.transaction_date  = d.calendar_date
 left join dim_party as p on t.party = p.party_key
 )
 

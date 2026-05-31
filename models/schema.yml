@@ -1,4 +1,3 @@
-
 version: 2
 
 sources:
@@ -7,7 +6,7 @@ sources:
     schema: rawdata_getsafe
     tables:
       - name: rawdata_getsafe
-        description: 'This is the csv file for raw transaction finance data'
+        description: "Table for raw transaction finance data"
         columns:
           - name: trasaction_id
             tests: [not_null, unique]
@@ -16,7 +15,74 @@ sources:
     schema: product_customers
     tables:
       - name: product_customers
-        description: 'This is csv file for raw product customer data'
-      
-        
+        description: "Table for raw product customer data"
+
+models:
+#staging
+  - name: stg_raw_finance_data
+    description: "Cleaned finance transaction data used for premium reporting"
+    columns:
+      - name: transaction_id
+        tests: [not_null, unique]
+  - name: status
+    description: "Cleaned transaction status."
+    tests:
+      - not_null
+  - name: stg_pc_product_customers
+    description: "Cleaned customer contracts"
+    columns:
+      - name: user_id
+        tests: [not_null]
+
+#intermediate 
+  - name: int_finance_data
+    description: 
+      Applies the net premium and gross premium business rule
+    columns:
+      - name: transaction_id
+        tests: [not_null]
+      - name: net_premium_amount
+        description: "Finance transactions with net premium"
+      - name: gross_premium_amount
+        description: "Finance transactions with gross_premium_amount"
+#dimensions
+
+  - name: dim_date
+    description: Calendar dimension
+    columns:
+      - name: date_key
+        tests: [not_null, unique]
+        description: "Integer YYYYMMDD surrogate key"
+      - name: calendar_date
+        tests: [not_null, unique]
+ 
+  - name: dim_party
+    description: Partner reference data
+    columns:
+      - name: party_id
+        tests: [not_null, unique]
+      - name: party_key
+        tests: [not_null, unique]
+      - name: party_type
+        description: "Category: reinsurer, digital_partner, property_partner, or partner."
+
+  - name: dim_product_group
+    description: One row per insurance product category (dog, car, dental, etc.)
+    columns:
+      - name: product_group_id
+        tests: [not_null, unique]
+      - name: product_group_key
+        tests: [not_null, unique]
+      - name: product_category
+        description: "Broad grouping: health, pet, property, liability, or other."
+
+#fact
+
+  - name: fact_transactions
+    description: Central finance fact table
+    columns:
+      - name: transaction_id
+        tests: [not_null]
+      - name: gross_premium_amount
+        description: "Raw transaction amount. Always positive."
     
