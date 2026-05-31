@@ -70,7 +70,7 @@ Select
  current_timestamp() as loaded_at
 
 from contracts_days as cd 
-left join dim_date as dd on cd.calendar_date = dd.calender_date
+left join dim_date as dd on cd.calendar_date = dd.calendar_date
 left join dim_product_group as dp on cd.product_group = dp.product_group_key
 )
 

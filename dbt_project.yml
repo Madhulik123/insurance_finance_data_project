@@ -41,3 +41,21 @@ models:
     staging:
       +materialized: view
       +schema: staging
+    intermediate:
+      +materialized: view        
+      +schema: intermediate
+    dimensions:
+      +materialized: table      
+      +schema: dimensions
+    facts:
+      +materialized: table      
+      +schema: facts
+    marts:
+      +materialized: table       
+      +schema: marts
+seeds:
+  getsafe_analytics:
+    +schema: seeds
+    accounting_monthly_closing:
+      +column_types:
+        premium: numeric

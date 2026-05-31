@@ -13,7 +13,7 @@ stg as (
 premium_cal as (
 
 Select 
-    id,
+    transaction_id,
     created_at,
     date(created_at) as transaction_date,
     format_date('%Y-%m', date(created_at)) as year_month,
