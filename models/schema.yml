@@ -1,0 +1,22 @@
+
+version: 2
+
+sources:
+  - name: raw
+    database: madhulika-data-project
+    schema: rawdata_getsafe
+    tables:
+      - name: rawdata_getsafe
+        description: 'This is the csv file for raw transaction finance data'
+        columns:
+          - name: trasaction_id
+            tests: [not_null, unique]
+  - name: product_customers
+    database: madhulika-data-project
+    schema: product_customers
+    tables:
+      - name: product_customers
+        description: 'This is csv file for raw product customer data'
+      
+        
+    
