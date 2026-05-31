@@ -78,11 +78,4 @@ models:
 
 #fact
 
-  - name: fact_transactions
-    description: Central finance fact table
-    columns:
-      - name: transaction_id
-        tests: [not_null]
-      - name: gross_premium_amount
-        description: "Raw transaction amount. Always positive."
-    
+  
