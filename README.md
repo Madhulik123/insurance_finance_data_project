@@ -35,5 +35,5 @@ dbt build
 DBT,
 Big Query,
 Github,
-Claude,
+AI,
 Word Doc
