@@ -78,4 +78,58 @@ models:
 
 #fact
 
-  
+  - name: fact_transactions
+    description: one row per transaction
+    columns:
+      - name: transaction_id
+        tests: [not_null]
+      - name: gross_premium_amount
+        description: "(proceseed - refunded) transactions"
+      - name: net_premium_amount
+        description: "considered just processed transactions"
+
+  - name: fct_customers_daily
+    description: daily active customers and premium reporting
+    columns:
+      - name: calendar_date
+        tests: [not_null]
+      - name: user_id
+        tests: [not_null]
+      - name: daily_premium
+        description: "Premium for each customer"
+      - name: accumulated_acquired_premium
+        description: "Running total of premium acquired "
+
+#marts
+
+  - name: mart_monthly_premiums
+    description: "Monthly premium per party"
+    columns:
+      - name: party_name
+        tests: [not_null]
+      - name: month
+        tests: [not_null]
+ 
+  - name: mart_finance_vs_accounting_cal
+    description: "Finance vs accounting comparison"
+    columns:
+      - name: party_name
+        tests: [not_null]
+      - name: month
+        tests: [not_null]
+
+  - name: mart_customer_kpis
+    description: "kpis for customer and product analytics"
+    columns:
+      - name: calendar_date
+        tests: [not_null]
+      - name: user_id
+        tests: [not_null]
+#seeds
+
+seeds:
+  - name: accounting_monthly_closing
+    description: "Monthly closing figures from the Accounting team"
+    columns:
+      - name: premium
+        tests: [not_null]
