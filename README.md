@@ -17,6 +17,7 @@ This project focuses on:
 Finance and Customer Pipeline.This project follows a **multi-layer dbt architecture** combining **Medallion Architecture** 
 and **Kimball Dimensional Modelling** principles.It specifically uses a star schema with two independant data models e.g finance and customer data models. 
 
+
 ### Finance pipeline
 
 raw.rawdata_getsafe
@@ -33,6 +34,8 @@ raw.rawdata_getsafe
                                                                 ▲
                                                accounting_monthly_closing
 
+                                               
+
   ### Customer pipeline
 
 product_customers.product_customers
@@ -44,6 +47,10 @@ product_customers.product_customers
                                                     │
                                                     ▼
                                           mart_customer_kpis
+
+
+
+                                          
 
 
 
@@ -71,4 +78,4 @@ Word Doc
 
 **Madhulika Suman**
 Senior Data Analyst — Berlin, Germany
-[LinkedIn](https://www.linkedin.com/in/madhulika-suman)
+www.linkedin.com/in/madhulika-suman-857a7181
