@@ -26,7 +26,7 @@ coalesce(f.party_name,a.party) as party_name,
 coalesce(f.month,a.month) as month,
 f.finance_premium as finance_premium,
 a.accounting_premium as accounting_premium,
-
+round(coalesce(a.accounting_premium, 0) - coalesce(f.finance_premium, 0),2) as diff,
 case 
 when f.finance_premium = a.accounting_premium then 'Match' 
 when f.party_name is null then 'Finace value is missing'
