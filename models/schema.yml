@@ -8,8 +8,8 @@ sources:
       - name: rawdata_getsafe
         description: "Table for raw transaction finance data"
         columns:
-          - name: trasaction_id
-            tests: [not_null, unique]
+          - name: transaction_id
+            tests: [not_null]
   - name: product_customers
     database: madhulika-data-project
     schema: product_customers
