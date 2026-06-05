@@ -66,7 +66,8 @@ Select
     --KPIs for dashboards
     f.acquired_premium,
     f.user_id,
-    f.daily_premium
+    f.daily_premium,
+    f.active_contract_count
 
     from fact as f
     left join dim_date as dd on f.calendar_date = dd.calendar_date
