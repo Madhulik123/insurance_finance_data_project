@@ -75,7 +75,7 @@ Select
 
 from contracts_days as cd 
 left join dim_date as dd on cd.calendar_date = dd.calendar_date
-left join dim_product_group as dp on cd.product_group = dp.product_group_key
+left join dim_product_group as dp on lower(trim(cd.product_group)) = dp.product_group_key
 )
 
 Select * from final 
