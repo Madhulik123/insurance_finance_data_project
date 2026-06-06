@@ -38,15 +38,23 @@ contracts_days as (
         date(s.started_at) as contract_start_date,
         date(s.churned_at) as contract_end_date,
         s.is_active,
+         case
+    when calendar_date = date(s.started_at)
+    then s.premium
+    else 0
+    end as acquired_premium,
         calendar_date
         from stg as s,
         unnest ( 
             generate_date_array(
                 date(s.started_at),
+                --coalesce(date(s.churned_at), current_date())
+                greatest(
+                date(s.started_at),
                 coalesce(date(s.churned_at), current_date())
-        )
+        ))
     ) as calendar_date
- where date(s.started_at) <= coalesce(date(s.churned_at), current_date())
+
 
 ),
 final as (
@@ -58,11 +66,7 @@ Select
  cd.product_group as product_group_key,
  cd.premium as daily_premium,
  1 as active_contract_count,
- case
-    when cd.calendar_date = cd.contract_start_date
-    then cd.premium
-    else 0
-    end as acquired_premium,
+ cd.acquired_premium,
  cd.acquisition_date,
  cd.contract_start_date,
  cd.contract_end_date,
