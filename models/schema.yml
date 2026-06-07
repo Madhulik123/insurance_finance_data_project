@@ -84,9 +84,9 @@ models:
       - name: transaction_id
         tests: [not_null]
       - name: gross_premium_amount
-        description: "(proceseed - refunded) transactions"
+        description: "(proceseed) transactions"
       - name: net_premium_amount
-        description: "considered just processed transactions"
+        description: "considered processed - refund transactions"
 
   - name: fct_customers_daily
     description: daily active customers and premium reporting
