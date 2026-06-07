@@ -10,11 +10,13 @@ with party as (
 )
 
 Select 
-    row_number() over (order by party_key) as party_id, -- generate unique key for each party
+
+    -- generate unique key for each party
+    row_number() over (order by party_key) as party_id, 
     party_key,
     lower(trim(party_key)) as party_name,
 
-    --party type has been defined
+   --party type has been defined
    case 
     when party_key like '%re' then 'Reinsurer'
     when party_key like '%digital' then 'digital_partner'
