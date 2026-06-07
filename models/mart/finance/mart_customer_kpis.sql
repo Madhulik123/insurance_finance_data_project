@@ -4,14 +4,10 @@
 {{
     config(
         materialized = 'table',
-        partition_by = {
-            "field": "calendar_date",
-            "data_type": "date",
-            "granularity": "day"
-        },
-        cluster_by = ['product_category', 'product_group_key']
+        cluster_by = ['product_group_key', 'user_id']
     )
-    }}
+}}
+
 
 with fact as (
 
