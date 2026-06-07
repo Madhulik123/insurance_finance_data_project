@@ -46,7 +46,7 @@ models:
       +materialized: table      
     facts:
       +materialized: table      
-    marts:
+    mart:
       +materialized: table       
 seeds:
   getsafe_data_case_study:
