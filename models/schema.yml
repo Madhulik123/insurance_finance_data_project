@@ -1,0 +1,137 @@
+version: 2
+
+sources:
+  - name: raw
+    database: madhulika-data-project
+    schema: rawdata_getsafe
+    tables:
+      - name: rawdata_getsafe
+        description: "Table for raw transaction finance data"
+        columns:
+          - name: transaction_id
+            tests: [not_null]
+  - name: product_customers
+    database: madhulika-data-project
+    schema: product_customers
+    tables:
+      - name: product_customers
+        description: "Table for raw product customer data"
+
+models:
+#staging
+  - name: stg_raw_financial_data
+    description: "Cleaned finance transaction data used for premium reporting"
+    columns:
+      - name: transaction_id
+        tests: [not_null, unique]
+      - name: status
+        description: "Cleaned transaction status."
+        tests:
+          - not_null
+  - name: stg_pc_product_customers
+    description: "Cleaned customer contracts"
+    columns:
+      - name: user_id
+        tests: [not_null]
+
+#intermediate 
+  - name: int_finance_data
+    description: 
+      Applies the net premium and gross premium business rule
+    columns:
+      - name: transaction_id
+        tests: [not_null]
+      - name: net_premium_amount
+        description: "Finance transactions with net premium"
+      - name: gross_premium_amount
+        description: "Finance transactions with gross_premium_amount"
+#dimensions
+
+  - name: dim_date
+    description: Calendar dimension
+    columns:
+      - name: date_key
+        tests: [not_null, unique]
+        description: "Integer YYYYMMDD surrogate key"
+      - name: calendar_date
+        tests: [not_null, unique]
+ 
+  - name: dim_party
+    description: Partner reference data
+    columns:
+      - name: party_id
+        tests: [not_null, unique]
+      - name: party_key
+        tests: [not_null, unique]
+      - name: party_type
+        description: "Category: reinsurer, digital_partner, property_partner, or partner."
+
+  - name: dim_product_group
+    description: One row per insurance product category (dog, car, dental, etc.)
+    columns:
+      - name: product_group_id
+        tests: [not_null, unique]
+      - name: product_group_key
+        tests: [not_null, unique]
+      - name: product_category
+        description: "Broad grouping: health, pet, property, liability, or other."
+
+#fact
+
+  - name: fact_transactions
+    description: one row per transaction
+    columns:
+      - name: transaction_id
+        tests: [not_null]
+      - name: gross_premium_amount
+        description: "(proceseed) transactions"
+      - name: net_premium_amount
+        description: "considered processed - refund transactions"
+
+  - name: fact_customers_daily
+    description: daily active customers and premium reporting
+    columns:
+      - name: calendar_date
+        tests: [not_null]
+      - name: user_id
+        tests: [not_null]
+      - name: daily_premium
+        description: "Prorated daily premium (monthly premium / days in month). SUM over a date range = premium collected in that range."
+      - name: monthly_premium
+        description: "Original monthly premium amount from the contract."
+      - name: accumulated_acquired_premium
+        description: "Running total of acquired premium per customer from the beginning of time up to each date."
+
+#marts
+
+  - name: mart_monthly_premiums
+    description: "Monthly premium per party"
+    columns:
+      - name: party_name
+        tests: [not_null]
+      - name: month
+        tests: [not_null]
+ 
+  - name: mart_finance_vs_accounting_cal
+    description: "Finance vs accounting comparison"
+    columns:
+      - name: party_name
+        tests: [not_null]
+      - name: month
+        tests: [not_null]
+
+  - name: mart_customer_kpis
+    description: "kpis for customer and product analytics"
+    columns:
+      - name: calendar_date
+        tests: [not_null]
+      - name: user_id
+        tests: [not_null]
+#seeds
+
+seeds:
+  - name: accounting_monthly_closing
+    description: "Monthly closing figures from the Accounting team"
+    columns:
+      - name: premium
+        tests: [not_null]
