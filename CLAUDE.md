@@ -65,7 +65,7 @@ source: product_customers.product_customers (product_customers.csv)
 - **`fact_customers_daily`** uses `generate_date_array` + `cross join unnest` to explode each customer contract into one row per active day. This allows the BI tool to use only `SUM` and `COUNT` for all KPIs (active customers, daily premium, accumulated acquired premium).
 - **`accumulated_acquired_premium`** is computed via a window function (`SUM(acquired_premium) OVER ... ROWS UNBOUNDED PRECEDING`) so BI tools don't need running totals.
 - **Surrogate keys** in dimension tables use `farm_fingerprint()` for stability — `row_number()` is unsafe as new rows would re-number existing keys.
-- **Reconciliation** (`mart_finance_vs_accounting_cal`) compares `net_premium_amount` from finance against the accounting seed (`accounting_monthly_closing.csv`) using a `FULL OUTER JOIN` to surface both sides of any discrepancy.
+- **Reconciliation** (`mart_finance_vs_accounting_cal`) compares `gross_premium_amount` from finance against the accounting seed (`accounting_monthly_closing.csv`) — the accounting closing aligns with gross (processed charges before refunds). It uses a `FULL OUTER JOIN` to surface both sides of any discrepancy, and also surfaces `net_premium_amount` and `refund_impact` alongside.
 
 ### Materialization Strategy (set in `dbt_project.yml`)
 | Layer | Materialization |
