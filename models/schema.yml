@@ -31,7 +31,8 @@ models:
           # net/gross premium logic keys entirely off this field; an unmapped
           # status silently collapses to 'unknown' (0 premium). Fail loudly instead.
           - accepted_values:
-              values: ['processed', 'refunded', 'failed', 'unknown']
+              arguments:
+                values: ['processed', 'refunded', 'failed', 'unknown']
   - name: stg_pc_product_customers
     description: "Cleaned customer contracts"
     columns:
@@ -94,14 +95,16 @@ models:
         # the FK is null and the transaction silently drops out of party-grouped reports
         tests:
           - relationships:
-              to: ref('dim_party')
-              field: party_key
+              arguments:
+                to: ref('dim_party')
+                field: party_key
       - name: date_key
         description: "FK to dim_date."
         tests:
           - relationships:
-              to: ref('dim_date')
-              field: date_key
+              arguments:
+                to: ref('dim_date')
+                field: date_key
       - name: gross_premium_amount
         description: "(proceseed) transactions"
       - name: net_premium_amount
@@ -119,15 +122,17 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('dim_product_group')
-              field: product_group_key
+              arguments:
+                to: ref('dim_product_group')
+                field: product_group_key
       - name: active_contract_count
         description: "Always 1; SUM gives active contracts per day."
         # if this is ever not exactly 1, the active-customers KPI is wrong
         tests:
           - accepted_values:
-              values: [1]
-              quote: false
+              arguments:
+                values: [1]
+                quote: false
       - name: daily_premium
         description: "Prorated daily premium (monthly premium / days in month). SUM over a date range = premium collected in that range."
       - name: monthly_premium
@@ -157,7 +162,8 @@ models:
         # guards the FULL OUTER JOIN + CASE logic: any new/unhandled branch shows up here
         tests:
           - accepted_values:
-              values: ['Match', 'Difference', 'Accounting value is missing', 'Finance value is missing']
+              arguments:
+                values: ['Match', 'Difference', 'Accounting value is missing', 'Finance value is missing']
 
   - name: mart_customer_kpis
     description: "kpis for customer and product analytics"
