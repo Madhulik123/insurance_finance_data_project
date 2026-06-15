@@ -17,6 +17,9 @@ semantic_models:
       - name: party
         type: foreign
         expr: party_key
+      - name: calendar_day
+        type: foreign
+        expr: date_key
     dimensions:
       - name: transaction_date
         type: time
@@ -59,6 +62,9 @@ semantic_models:
       - name: product_group
         type: foreign
         expr: product_group_key
+      - name: calendar_day
+        type: foreign
+        expr: date_key
     dimensions:
       - name: calendar_date
         type: time
@@ -111,4 +117,33 @@ semantic_models:
       - name: product_group_name
         type: categorical
       - name: product_category
+        type: categorical
+
+  # ---------------------------------------------------------------------------
+  # CALENDAR (conformed date dimension) — exposes the calendar attributes that
+  # MetricFlow's built-in metric_time grains don't cover (is_weekend, week_number,
+  # month_short). Joins to both facts on the date_key surrogate. Standard
+  # year/quarter/month slicing is still also available via metric_time.
+  # ---------------------------------------------------------------------------
+  - name: calendar
+    description: "Shared calendar dimension. Grain: one row per day."
+    model: ref('dim_date')
+    entities:
+      - name: calendar_day
+        type: primary
+        expr: date_key
+    dimensions:
+      - name: year
+        type: categorical
+      - name: quarter
+        type: categorical
+      - name: month
+        type: categorical
+      - name: month_short
+        type: categorical
+      - name: year_month
+        type: categorical
+      - name: week_number
+        type: categorical
+      - name: is_weekend
         type: categorical

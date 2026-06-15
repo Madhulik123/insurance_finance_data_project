@@ -6,7 +6,7 @@ Defines business metrics **once** on top of the star schema so every tool return
 | File | Purpose |
 |------|---------|
 | `metricflow_time_spine.sql` + `_time_spine.yml` | Daily date spine (from `dim_date`) — required for time-grain & cumulative metrics |
-| `semantic_models.yml` | 4 semantic models: `transactions`, `customers_daily` (facts, with measures) + `party`, `product_group` (dims, for slicing) |
+| `semantic_models.yml` | 5 semantic models: `transactions`, `customers_daily` (facts, with measures) + `party`, `product_group`, `calendar` (dims, for slicing) |
 | `metrics.yml` | 9 metrics (simple, derived, cumulative) |
 
 ## Metrics
@@ -34,9 +34,17 @@ mf list metrics
 mf query --metrics total_gross_premium,total_net_premium,refund_impact --group-by party__party_type
 mf query --metrics active_customers,total_daily_premium --group-by product_group__product_category
 mf query --metrics total_gross_premium,cumulative_acquired_premium --group-by metric_time__month
+mf query --metrics total_gross_premium --group-by calendar_day__is_weekend
 ```
 Join syntax: `<entity>__<dimension>` (e.g. `party__party_type`). The shared entity names on the
 fact and dimension semantic models let MetricFlow join automatically — no hand-written SQL.
+
+### Calendar slicing
+Standard date grains (day/week/month/quarter/year) come free via `metric_time` (e.g.
+`--group-by metric_time__quarter`). The `calendar` semantic model (on `dim_date`, joined via
+`date_key`) additionally exposes attributes that `metric_time` doesn't cover:
+`calendar_day__is_weekend`, `calendar_day__week_number`, `calendar_day__month_short`
+(plus `year`, `quarter`, `month`, `year_month` for convenience).
 
 ## Note on `fact_customers_daily` partitioning
 Partitioning by `calendar_date` is disabled on the BigQuery **sandbox** (no billing), where
