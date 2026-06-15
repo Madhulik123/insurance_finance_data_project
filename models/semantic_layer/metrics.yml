@@ -1,0 +1,73 @@
+version: 2
+
+metrics:
+
+  # --- Finance ---------------------------------------------------------------
+  - name: total_gross_premium
+    label: "Total Gross Premium"
+    description: "Written premium (processed charges before refunds)."
+    type: simple
+    type_params:
+      measure: gross_premium
+
+  - name: total_net_premium
+    label: "Total Net Premium"
+    description: "Premium net of refunds."
+    type: simple
+    type_params:
+      measure: net_premium
+
+  - name: transaction_count
+    label: "Transaction Count"
+    description: "Number of transactions."
+    type: simple
+    type_params:
+      measure: transaction_count
+
+  - name: refund_impact
+    label: "Refund Impact (Gross - Net)"
+    description: "Premium returned to customers = gross minus net."
+    type: derived
+    type_params:
+      expr: gross - net
+      metrics:
+        - name: total_gross_premium
+          alias: gross
+        - name: total_net_premium
+          alias: net
+
+  # --- Customers -------------------------------------------------------------
+  - name: active_customers
+    label: "Active Customers"
+    description: "Distinct customers with an active contract."
+    type: simple
+    type_params:
+      measure: active_customers_distinct
+
+  - name: active_contracts
+    label: "Active Contracts"
+    description: "Active contracts per day (SUM of 1-per-row flag)."
+    type: simple
+    type_params:
+      measure: active_contract_count
+
+  - name: total_daily_premium
+    label: "Daily Premium Earned"
+    description: "Prorated premium earned over the selected period."
+    type: simple
+    type_params:
+      measure: daily_premium_amount
+
+  - name: total_acquired_premium
+    label: "Acquired Premium"
+    description: "Premium booked on contract start dates in the period."
+    type: simple
+    type_params:
+      measure: acquired_premium_amount
+
+  - name: cumulative_acquired_premium
+    label: "Cumulative Acquired Premium"
+    description: "Running total of acquired premium across all time."
+    type: cumulative
+    type_params:
+      measure: acquired_premium_amount

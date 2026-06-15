@@ -1,14 +1,15 @@
 --customer daily fact table
 --This table is used for daily active customers and premium reporting 
 
+-- NOTE: calendar_date partitioning is intentionally disabled below because this project
+-- runs on a BigQuery sandbox (no billing), where every partition expires after 60 days
+-- and silently deletes historical rows — which zeroed out acquired_premium and broke the
+-- cumulative metrics. A non-partitioned table retains all history (table expiration resets
+-- on each dbt run). Restore partitioning once billing is enabled:
+--   partition_by = {'field': 'calendar_date', 'data_type': 'date', 'granularity': 'month'}
 {{
     config(
         materialized = 'table',
-        partition_by = {
-            'field': 'calendar_date',
-            'data_type': 'date',
-            'granularity': 'month'
-        },
         cluster_by = ['product_group_key', 'user_id']
     )
 }}

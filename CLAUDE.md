@@ -77,9 +77,12 @@ source: product_customers.product_customers (product_customers.csv)
 | mart | table |
 
 ### BigQuery-Specific Patterns
-- `fact_customers_daily` uses `partition_by = {field: 'calendar_date', granularity: 'month'}` and `cluster_by = ['product_group_key', 'user_id']` for query cost control.
+- `fact_customers_daily` uses `cluster_by = ['product_group_key', 'user_id']` for query performance. **Partitioning by `calendar_date` is intentionally disabled**: this project runs on a BigQuery sandbox (no billing), where partitions expire after 60 days and silently delete historical rows (which zeroed out `acquired_premium` and the cumulative metrics). Restore `partition_by = {field: 'calendar_date', granularity: 'month'}` once billing is enabled — see the comment in the model.
 - `QUALIFY ROW_NUMBER()` is used in staging for deduplication.
 - `date(timestamp, 'Europe/Berlin')` is used for timezone-aware date extraction.
+
+### Semantic Layer (dbt / MetricFlow)
+- `models/semantic_layer/` defines 9 metrics (simple, derived `refund_impact`, cumulative acquired premium) over the facts, plus a `metricflow_time_spine` (from `dim_date`) and dimension semantic models for slicing. Query locally with `mf query`; see `models/semantic_layer/README.md`.
 
 ## Data Sources
 

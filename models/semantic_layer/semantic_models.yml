@@ -1,0 +1,114 @@
+version: 2
+
+semantic_models:
+
+  # ---------------------------------------------------------------------------
+  # FINANCE: one row per transaction
+  # ---------------------------------------------------------------------------
+  - name: transactions
+    description: "Finance transactions fact. Grain: one row per transaction."
+    model: ref('fact_transactions')
+    defaults:
+      agg_time_dimension: transaction_date
+    entities:
+      - name: transaction
+        type: primary
+        expr: transaction_id
+      - name: party
+        type: foreign
+        expr: party_key
+    dimensions:
+      - name: transaction_date
+        type: time
+        type_params:
+          time_granularity: day
+      - name: status
+        type: categorical
+        expr: status_key
+      - name: premium_currency
+        type: categorical
+    measures:
+      - name: gross_premium
+        description: "Written premium (processed charges before refunds)."
+        agg: sum
+        expr: gross_premium_amount
+      - name: net_premium
+        description: "Premium net of refunds."
+        agg: sum
+        expr: net_premium_amount
+      - name: transaction_count
+        description: "Number of transactions."
+        agg: count
+        expr: transaction_id
+
+  # ---------------------------------------------------------------------------
+  # CUSTOMERS: one row per customer/product per active day
+  # ---------------------------------------------------------------------------
+  - name: customers_daily
+    description: "Customer daily fact. Grain: one row per customer, per product group, per active day."
+    model: ref('fact_customers_daily')
+    defaults:
+      agg_time_dimension: calendar_date
+    entities:
+      - name: customer_day
+        type: primary
+        expr: "user_id || '|' || product_group_key || '|' || cast(calendar_date as string)"
+      - name: customer
+        type: foreign
+        expr: user_id
+      - name: product_group
+        type: foreign
+        expr: product_group_key
+    dimensions:
+      - name: calendar_date
+        type: time
+        type_params:
+          time_granularity: day
+      - name: is_active
+        type: categorical
+    measures:
+      - name: active_contract_count
+        description: "Active contracts (SUM); 1 per row."
+        agg: sum
+        expr: active_contract_count
+      - name: active_customers_distinct
+        description: "Distinct active customers."
+        agg: count_distinct
+        expr: user_id
+      - name: daily_premium_amount
+        description: "Prorated daily premium; SUM over a date range = premium earned."
+        agg: sum
+        expr: daily_premium
+      - name: acquired_premium_amount
+        description: "Premium booked on contract start date."
+        agg: sum
+        expr: acquired_premium
+
+  # ---------------------------------------------------------------------------
+  # DIMENSIONS (no measures) — enable slicing finance/customer metrics
+  # ---------------------------------------------------------------------------
+  - name: party
+    description: "Charged-party dimension."
+    model: ref('dim_party')
+    entities:
+      - name: party
+        type: primary
+        expr: party_key
+    dimensions:
+      - name: party_name
+        type: categorical
+      - name: party_type
+        type: categorical
+
+  - name: product_group
+    description: "Product group dimension."
+    model: ref('dim_product_group')
+    entities:
+      - name: product_group
+        type: primary
+        expr: product_group_key
+    dimensions:
+      - name: product_group_name
+        type: categorical
+      - name: product_category
+        type: categorical
