@@ -43,8 +43,9 @@ fact and dimension semantic models let MetricFlow join automatically — no hand
 Standard date grains (day/week/month/quarter/year) come free via `metric_time` (e.g.
 `--group-by metric_time__quarter`). The `calendar` semantic model (on `dim_date`, joined via
 `date_key`) additionally exposes attributes that `metric_time` doesn't cover:
-`calendar_day__is_weekend`, `calendar_day__week_number`, `calendar_day__month_short`
-(plus `year`, `quarter`, `month`, `year_month` for convenience).
+`calendar_day__is_weekend`, `calendar_day__week_number`, `calendar_day__month_short`,
+`calendar_day__year_month`. (`year`/`quarter`/`month` are not redefined here — they're
+reserved MetricFlow granularity keywords and already covered by `metric_time`.)
 
 ## Note on `fact_customers_daily` partitioning
 Partitioning by `calendar_date` is disabled on the BigQuery **sandbox** (no billing), where

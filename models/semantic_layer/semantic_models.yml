@@ -133,12 +133,10 @@ semantic_models:
         type: primary
         expr: date_key
     dimensions:
-      - name: year
-        type: categorical
-      - name: quarter
-        type: categorical
-      - name: month
-        type: categorical
+      # NOTE: year/quarter/month are intentionally NOT defined here — MetricFlow
+      # reserves those as time-granularity keywords, and they're already available
+      # via metric_time (e.g. metric_time__quarter). Only the attributes metric_time
+      # can't express are exposed below.
       - name: month_short
         type: categorical
       - name: year_month
