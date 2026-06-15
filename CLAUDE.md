@@ -82,7 +82,7 @@ source: product_customers.product_customers (product_customers.csv)
 - `date(timestamp, 'Europe/Berlin')` is used for timezone-aware date extraction.
 
 ### Semantic Layer (dbt / MetricFlow)
-- `models/semantic_layer/` defines 9 metrics (simple, derived `refund_impact`, cumulative acquired premium) over the facts, plus a `metricflow_time_spine` (from `dim_date`) and dimension semantic models for slicing. Query locally with `mf query`; see `models/semantic_layer/README.md`.
+- `models/semantic_layer/` defines 9 metrics (simple, derived `refund_impact`, cumulative acquired premium) over the facts, plus a `metricflow_time_spine` (from `dim_date`) and dimension semantic models for slicing (`party`, `product_group`, and `calendar`). The `calendar` model (on `dim_date`, joined to both facts via `date_key`) exposes calendar attributes that `metric_time` grains don't cover — `is_weekend`, `week_number`, `month_short`. Query locally with `mf query`; see `models/semantic_layer/README.md`.
 
 ## Data Sources
 
