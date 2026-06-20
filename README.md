@@ -1,4 +1,4 @@
-# Getsafe Analytics Engineer Case Study
+# Insurance Finance Data Case Study
 
 # Objective :
 The objective of this project is to design a simple and reliable analytics layer for finance reporting.
