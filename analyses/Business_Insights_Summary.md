@@ -1,4 +1,4 @@
-# Getsafe Analytics Case Study — Business Insights
+# Insurance_finance_data_project — Business Insights
 
 **Author:** Madhulika Suman · **Date:** 2026-06-10
 **Sources analysed:** `Raw.csv` (2,660 finance transactions), `accounting_monthly_closing.csv` (12 monthly closing figures), `product_customers.csv` (10 customer contracts — illustrative sample)
