@@ -10,7 +10,8 @@ This project focuses on:
 4. Creating a maintainable dbt structure that can support future reporting, performance and data quality needs.
 
 # Lineage graph below:
-<img width="917" height="322" alt="image" src="https://github.com/user-attachments/assets/7708d3c1-ad1e-4731-92a5-999c5794a998" />
+<img width="585" height="277" alt="image" src="https://github.com/user-attachments/assets/261d382d-4c73-4417-86de-7e78e630fc16" />
+
 
 
 # Data Model 
