@@ -1,7 +1,7 @@
 # Semantic Layer & Data Modeling Checklist
 
 A practical checklist for designing and building a semantic layer (data modeling +
-BI-ready metrics), grounded in the patterns used in this Getsafe dbt project:
+BI-ready metrics), grounded in the patterns used in this Insurance dbt project:
 Medallion layering, Kimball star schema, grain-first facts, conformed `dim_date`,
 additive measures, reconciliation, and dbt tests.
 

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a **dbt (data build tool)** analytics project for Getsafe, targeting **Google BigQuery**. It builds a finance and customer analytics layer using a multi-layer Medallion + Kimball star schema architecture.
+This is a **dbt (data build tool)** analytics project for Insurance, targeting **Google BigQuery**. It builds a finance and customer analytics layer using a multi-layer Medallion + Kimball star schema architecture.
 
 ## Common Commands
 
@@ -40,7 +40,7 @@ Two fully independent data pipelines share `dim_date` but are otherwise separate
 
 ### Finance Pipeline
 ```
-source: raw.rawdata_getsafe (Raw.csv)
+source: raw.rawdata_insurance (Raw.csv)
   → stg_raw_financial_data          (view) — dedup, type cast, status normalization
     → int_finance_data               (view) — applies net/gross premium business rules
       → dim_party                    (table) — party dimension derived from staging
@@ -88,7 +88,7 @@ source: product_customers.product_customers (product_customers.csv)
 
 | Source | Description |
 |--------|-------------|
-| `raw.rawdata_getsafe` | Raw finance transactions: `transaction_id`, `created_at`, `premium_amount`, `premium_currency`, `charged_party`, `status` |
+| `raw.rawdata_insurance` | Raw finance transactions: `transaction_id`, `created_at`, `premium_amount`, `premium_currency`, `charged_party`, `status` |
 | `product_customers.product_customers` | Customer contracts: `user_id`, `premium`, `product_group`, `acquisition_date`, `started_at`, `churned_at` |
 | `seeds/accounting_monthly_closing.csv` | Accounting team's monthly closing figures: `party`, `month` (YYYY-MM), `premium` |
 

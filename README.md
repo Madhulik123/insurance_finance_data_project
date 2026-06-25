@@ -1,4 +1,4 @@
-# Getsafe Analytics Engineer Case Study
+# Insurance Analytics Engineer Case Study
 
 # Objective :
 The objective of this project is to design a simple and reliable analytics layer for finance reporting.
@@ -20,7 +20,7 @@ and **Kimball Dimensional Modelling** principles.It specifically uses a star sch
 
 ### Finance pipeline
 
-raw.rawdata_getsafe
+raw.rawdata_insurance
     └── stg_raw_finance_data
             └── dim_party ──────────────────────────┐
             └── int_finance_data ───────────────────┤

@@ -3,9 +3,9 @@ version: 2
 sources:
   - name: raw
     database: madhulika-data-project
-    schema: rawdata_getsafe
+    schema: rawdata_insurance
     tables:
-      - name: rawdata_getsafe
+      - name: rawdata_insurance
         description: "Table for raw transaction finance data"
         columns:
           - name: transaction_id
