@@ -5,7 +5,7 @@
 with source_data as (
 
     select *
-    from {{ source('raw', 'rawdata_getsafe') }}
+    from {{ source('raw', 'rawdata_insurance') }}
 
 ),
 

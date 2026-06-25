@@ -1,4 +1,4 @@
-# Insurance_finance_data_project — Business Insights
+# Insurance Analytics Case Study — Business Insights
 
 **Author:** Madhulika Suman · **Date:** 2026-06-10
 **Sources analysed:** `Raw.csv` (2,660 finance transactions), `accounting_monthly_closing.csv` (12 monthly closing figures), `product_customers.csv` (10 customer contracts — illustrative sample)
@@ -8,9 +8,9 @@
 
 ## Executive Summary
 
-- The raw transaction record reconciles to the Accounting monthly closing on a **gross premium** basis — **7 of 12 party-months match to the cent**, and the total unexplained gap is only **€68.03 (~0.4%)**.
+- The raw transaction record reconciles to the Accounting monthly closing on a **gross premium** basis — **8 of 12 party-months match to the cent**, and the total unexplained gap is only **€26.13 (~0.15% of gross)**. Correcting 3 sign-flipped charges cut this gap from an earlier €68.
 - Refunds are economically material: **47 refunds totalling €302.46** separate gross (billed) premium from net (earned) premium. This is the single biggest driver of any "earned vs billed" conversation.
-- The transaction data carries **minor but real quality issues** — 2 duplicate transaction IDs, 29 failed charges, and a `process`/`processed` status typo — all now handled in the dbt pipeline.
+- The transaction data carries **minor but real quality issues** — 2 duplicate transaction IDs, ~29 failed charges, a `process`/`processed` status typo, and 3 sign-flipped (`processed` + negative) charges — all now handled in the dbt pipeline.
 - The customer dataset provided is a **10-row sample**, sufficient to validate the KPI model but not to draw population-level conclusions. It does, however, expose **ID-corruption and date-integrity issues** worth fixing at source.
 
 ---
@@ -19,13 +19,15 @@
 
 ### 1. Premium by party (June–August 2025, deduplicated)
 
-| Party | Gross premium | Net premium | Refunds (count) |
+| Party | Gross (Jun–Aug) | Net (Jun–Aug) | Refunds (total)* |
 |-------|--------------:|------------:|----------------:|
-| dronant | €5,844.75 | €5,751.39 | 12 |
-| liadigital | €4,467.09 | €4,419.23 | 9 |
-| berlinre | €3,260.57 | €3,156.73 | 12 |
+| dronant | €5,857.97 | €5,764.61 | 13 |
+| liadigital | €4,467.09 | €4,419.23 | 10 |
 | getland | €3,802.78 | €3,745.38 | 12 |
-| **Total** | **€17,375.19** | **€17,072.73** | **45** |
+| berlinre | €3,289.25 | €3,185.41 | 12 |
+| **Total** | **€17,417.09** | **€17,114.63** | **47** |
+
+> *Refund counts cover all transactions (€302.46 total).*
 
 > **dronant** is the largest partner by premium volume (~34% of gross). Berlinre carries the **highest refund rate** relative to its premium base.
 
@@ -33,28 +35,28 @@
 
 | Outcome | Count | Notes |
 |---------|------:|-------|
-| Exact match (< €0.01) | 7 / 12 | getland (all 3 months), berlinre-Aug, dronant-Jun, liadigital-Jul & Aug |
-| Small difference | 5 / 12 | Accounting slightly **higher** than finance gross in every case |
+| Exact match (< €0.01) | 8 / 12 | getland (all 3 months), berlinre Jul & Aug, dronant-Jun, liadigital Jul & Aug |
+| Small difference | 4 / 12 | Accounting slightly **higher** than finance gross in every case |
 
 **Total absolute gap:**
-- Gross vs accounting: **€68.03** (0.4%)
-- Net vs accounting: €370.49 (2.1%)
+- Gross vs accounting: **€26.13** (~0.15%)
+- Net vs accounting: €328.59 (~1.9%)
 
 This is the key analytical finding: **Accounting closes on gross**, so finance must report **gross premium** to reconcile. Reporting net would manufacture a €370 phantom discrepancy.
 
 ### 3. Are there discrepancies, and what causes them?
 
-Yes — five party-months show Accounting marginally above finance gross:
+Yes — four party-months show Accounting marginally above finance gross:
 
 | Party | Month | Gross | Accounting | Diff |
 |-------|-------|------:|-----------:|-----:|
-| berlinre | 2025-07 | 1,070.06 | 1,098.74 | −28.68 |
-| dronant | 2025-07 | 1,760.35 | 1,780.19 | −19.84 |
 | berlinre | 2025-06 | 1,476.45 | 1,483.22 | −6.77 |
 | liadigital | 2025-06 | 2,235.13 | 2,241.79 | −6.66 |
+| dronant | 2025-07 | 1,773.57 | 1,780.19 | −6.62 |
 | dronant | 2025-08 | 1,100.99 | 1,107.07 | −6.08 |
 
-**Ruled out:** timezone treatment (UTC vs Europe/Berlin produces the *same* €68.03 gap) and duplicate IDs (only 2 exist, already deduplicated).
+**Resolved:** 3 transactions were `processed` with a *negative* amount (sign-entry errors); Accounting books these as positive premium. Correcting the sign reconciled **berlinre 2025-07 to the cent** and roughly halved dronant 2025-07's gap — cutting the total from €68 to €26.13.
+**Ruled out:** timezone treatment (UTC vs Europe/Berlin produces the *same* gap) and duplicate IDs (only 2 exist, already deduplicated).
 
 **Likely remaining causes & recommended actions:**
 1. **Refund / charge timing** — a charge counted by Accounting at close that was later refunded or re-stated in our system. → Agree a shared cut-off timestamp with Accounting.
@@ -109,7 +111,7 @@ The `mart_finance_vs_accounting_cal` model now produces this reconciliation auto
 - **`mart_monthly_premiums`** — gross & net premium per party/month → powers all Part I reporting.
 - **`mart_finance_vs_accounting_cal`** — automated reconciliation with match status, diff, and refund impact → replaces manual invoice comparison.
 - **`fact_customers_daily`** — one row per customer per active day, with **prorated `daily_premium`** (monthly ÷ days-in-month) and **pre-computed `accumulated_acquired_premium`** → BI tool needs only `SUM`/`COUNT`.
-- **Scalability:** `fact_customers_daily` is partitioned by `calendar_date` (monthly) and clustered by product group & user; a full rebuild correctly handles **retroactive cancellations/refunds**.
+- **Scalability:** `fact_customers_daily` is clustered by product group & user; a full rebuild correctly handles **retroactive cancellations/refunds**. *(Date partitioning is the production default; it's disabled on the current BigQuery sandbox, where partitions auto-expire after 60 days and would delete history.)*
 
 ---
 
