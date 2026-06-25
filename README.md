@@ -52,12 +52,10 @@ Two independent pipelines (finance & customer) share one conformed `dim_date`, b
                   └──────────────────────────────┘
 ```
 
-### Lineage — dbt models (design view)
-<img width="700" alt="dbt lineage graph" src="https://github.com/user-attachments/assets/261d382d-4c73-4417-86de-7e78e630fc16" />
+### Lineage — dbt models & Semantic layer (design view)
 
-### Lineage — semantic layer
-<!-- Paste your semantic-layer lineage screenshot URL between the quotes below -->
-<img width="917" alt="semantic layer lineage" src="PASTE_SEMANTIC_LAYER_IMAGE_URL_HERE" />
+<img width="745" height="288" alt="image" src="https://github.com/user-attachments/assets/81719e79-1a6e-45ce-b0b0-2f4cd1be8922" />
+
 
 ---
 
