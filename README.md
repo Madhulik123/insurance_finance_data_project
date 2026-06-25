@@ -52,9 +52,47 @@ Two independent pipelines (finance & customer) share one conformed `dim_date`, b
                   └──────────────────────────────┘
 ```
 
-### Lineage — dbt models & Semantic layer (design view)
+### Lineage (dbt models → marts → semantic layer)
 
-<img width="745" height="288" alt="image" src="https://github.com/user-attachments/assets/81719e79-1a6e-45ce-b0b0-2f4cd1be8922" />
+```mermaid
+flowchart TD
+    RAW[("raw.rawdata_insurance")]:::src --> STGF[stg_raw_financial_data]:::stg
+    STGF --> INTF[int_finance_data]:::int
+    INTF --> DP[dim_party]:::dim
+    INTF --> FT[fact_transactions]:::fact
+    DD[dim_date]:::dim --> FT
+    DP --> FT
+    FT --> MMP[mart_monthly_premiums]:::mart
+    MMP --> RECON[mart_finance_vs_accounting_cal]:::mart
+    SEED[[accounting_monthly_closing]]:::seed --> RECON
+
+    PC[("product_customers")]:::src --> STGC[stg_pc_product_customers]:::stg
+    STGC --> DPG[dim_product_group]:::dim
+    STGC --> FCD[fact_customers_daily]:::fact
+    DD --> FCD
+    DPG --> FCD
+    FCD --> KPI[mart_customer_kpis]:::mart
+
+    FT --> SL{{"Semantic Layer · 9 metrics (MetricFlow)"}}:::sl
+    FCD --> SL
+    DD --> SL
+
+    classDef src fill:#dbeafe,stroke:#2563eb,color:#1e3a8a;
+    classDef stg fill:#e0f2fe,stroke:#0284c7,color:#0c4a6e;
+    classDef int fill:#ede9fe,stroke:#7c3aed,color:#4c1d95;
+    classDef dim fill:#dcfce7,stroke:#16a34a,color:#14532d;
+    classDef fact fill:#ffedd5,stroke:#ea580c,color:#7c2d12;
+    classDef mart fill:#fee2e2,stroke:#dc2626,color:#7f1d1d;
+    classDef seed fill:#f3e8ff,stroke:#9333ea,color:#581c87;
+    classDef sl fill:#fae8ff,stroke:#c026d3,color:#701a75;
+```
+
+<details>
+<summary>📸 dbt docs DAG (screenshot)</summary>
+
+<img width="745" alt="dbt docs lineage" src="https://github.com/user-attachments/assets/81719e79-1a6e-45ce-b0b0-2f4cd1be8922" />
+
+</details>
 
 
 ---
